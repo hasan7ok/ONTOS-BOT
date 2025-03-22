@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عَالَمُ السِّحْرِ الرَّقْمِيّ</title>
+    <style>
+        :root {
+            --color-1: #ff6b6b;
+            --color-2: #4ecdc4;
+            --color-3: #ffe66d;
+            --bg-gradient: linear-gradient(45deg, var(--color-1), var(--color-2), var(--color-3));
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Cairo', sans-serif;
+            background: #0a0a23;
+            cursor: none;
+        }
+
+        /* خلفية حية */
+        .living-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, transparent 20%, #0a0a23 90%);
+            animation: bg-pulse 15s infinite alternate;
+            z-index: -1;
+        }
+
+        @keyframes bg-pulse {
+            0% { transform: scale(1); opacity: 0.3; }
+            100% { transform: scale(1.5); opacity: 0.7; }
+        }
+
+        /* تأثير الثلج التفاعلي */
+        .snow-container {
+            position: fixed;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* زر البوت السحري */
+        .portal-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 1.5rem 3rem;
+            font-size: 2em;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid var(--color-2);
+            color: var(--color-3);
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            transition: all 0.5s;
+            text-shadow: 0 0 15px var(--color-1);
+        }
+
+        .portal-button:hover {
+            background: rgba(78, 205, 196, 0.3);
+            transform: translate(-50%, -50%) rotate(3deg) scale(1.1);
+            box-shadow: 0 0 40px var(--color-2);
+        }
+
+        /* تأثير النقر */
+        .click-effect {
+            position: absolute;
+            border: 2px solid var(--color-1);
+            border-radius: 50%;
+            animation: ripple 1s linear forwards;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(5); opacity: 0; }
+        }
+
+        /* أثر المؤشر */
+        .cursor-trail {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--color-3);
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            animation: cursorTrail 0.3s linear forwards;
+        }
+
+        @keyframes cursorTrail {
+            0% { transform: scale(1); opacity: 0.7; }
+            100% { transform: scale(0.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="living-bg"></div>
+    <canvas class="snow-container" id="snowCanvas"></canvas>
+    
+    <a href="https://t.me/ONTOS_BOT?start=DK1rQES" 
+       class="portal-button"
+       id="mainPortal">
+        𓆣 اِفْتَحُ البَوَّابَةَ 𓆣
+    </a>
+
+    <script>
+        // تغيير الألوان الديناميكي
+        const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#ff9ff3'];
+        let currentColor = 0;
+        setInterval(() => {
+            document.documentElement.style.setProperty('--color-1', colors[currentColor]);
+            document.documentElement.style.setProperty('--color-2', colors[(currentColor + 1) % 4]);
+            document.documentElement.style.setProperty('--color-3', colors[(currentColor + 2) % 4]);
+            currentColor = (currentColor + 1) % 4;
+        }, 5000);
+
+        // تأثير الثلج التفاعلي
+        const snowCanvas = document.getElementById('snowCanvas');
+        const ctx = snowCanvas.getContext('2d');
+        let particles = [];
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * snowCanvas.width;
+                this.y = Math.random() * snowCanvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speed = Math.random() * 2 + 1;
+            }
+            update() {
+                this.y += this.speed;
+                if (this.y > snowCanvas.height) this.y = 0;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${this.size/4})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initSnow() {
+            snowCanvas.width = window.innerWidth;
+            snowCanvas.height = window.innerHeight;
+            for (let i = 0; i < 100; i++) particles.push(new Particle());
+        }
+
+        function animateSnow() {
+            ctx.clearRect(0, 0, snowCanvas.width, snowCanvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animateSnow);
+        }
+
+        // تأثير النقر
+        document.addEventListener('click', (e) => {
+            const clickEffect = document.createElement('div');
+            clickEffect.className = 'click-effect';
+            clickEffect.style.left = e.clientX + 'px';
+            clickEffect.style.top = e.clientY + 'px';
+            document.body.appendChild(clickEffect);
+            setTimeout(() => clickEffect.remove(), 1000);
+        });
+
+        // أثر المؤشر
+        document.addEventListener('mousemove', (e) => {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), 300);
+        });
+
+        // التهيئة
+        window.addEventListener('resize', initSnow);
+        initSnow();
+        animateSnow();
+    </script>
+</body>
+</html>
